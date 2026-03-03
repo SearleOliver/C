@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-
+AESKEYFIND="/home/ollie_towv/C/Sécurité/TP2-Forensics/aeskeyfind-master/aeskeyfind"
+RSAKEYFIND="/home/ollie_towv/C/Sécurité/TP2-Forensics/rsakeyfind-master/rsakeyfind"
 #$ apt install gdb aeskeyfind rsakeyfind
-
-echo -e "\033[01;33m"
 echo '
  ######  ########  ##    ## ##    ## ######## ##     ## 
 ##    ## ##     ##  ##  ##  ##   ##  ##        ##   ##  
@@ -118,7 +117,7 @@ do
 	else
 		echo '*** POTENTIAL RSA ***'
 	fi
-	rsakeyfind $dump
+	$RSAKEYFIND $dump
 #	ALGO=$(strings $dump | grep -i 'aes[-,_,1-5]' | tail -n 2 | head -n 1 | rev | cut -d ',' -f 1 | rev | cut -d '.' -f 1 | cut -d '@' -f 1 | cut -d ':' -f 5)
 	ALGO=$(strings $dump | grep -i -o 'aes[-,_,1-5].......' | tail -n 2 | head -n 1)
 	if [[ "$ALGO" ]]
@@ -127,7 +126,7 @@ do
 	else
 		echo '*** POTENTIAL AES ***'
 	fi
-	aeskeyfind $dump
+	$AESKEYFIND $dump
 	rm $dump
 done
 

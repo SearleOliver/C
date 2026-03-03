@@ -1,7 +1,10 @@
 #ifndef __AES_H__
 #define __AES_H__
-#define AES_BLOCK_SIZE 255
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "util.h"
+
 typedef uint32_t aeskey_t[4];
 typedef uint32_t keyexp_t[44];
 

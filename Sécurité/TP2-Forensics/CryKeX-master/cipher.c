@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define AES_BLOCK_SIZE 255
-
 // gcc -lcrypto cipher.c -o cipher
 
 unsigned char indata[AES_BLOCK_SIZE];
@@ -41,4 +39,3 @@ int main(void) {
     puts("encrypted");
     exit(0);
 }
-
