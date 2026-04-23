@@ -1,0 +1,13 @@
+# Utiliser Ubuntu 20.04 comme base
+FROM ubuntu:20.04
+
+# Eviter les prompts interactifs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Mettre à jour les paquets et installer OpenSSL 1.1
+RUN apt update && \
+    apt install -y openssl libssl1.1 libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Par défaut, ouvrir un shell
+CMD ["/bin/bash"]

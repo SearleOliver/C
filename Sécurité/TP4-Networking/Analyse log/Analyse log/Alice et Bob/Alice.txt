@@ -1,0 +1,47 @@
+Last login: Tue Mar 24 15:14:40 on ttys000 
+~ > cd /Volumes/Dock\ sauv\ FAC/FLEX\ Cours/Semestre\ printemps/Sécurité/TP4     py 3.9.10 17:25:49 
+/Volumes/D/F/Semestre /Sécurité/TP4 > cd Alice                                             17:25:56 
+/Volumes/D/F/Semestre /S/TP4/Alice > bash                                                  17:26:21 
+ 
+The default interactive shell is now zsh. 
+To update your account to use zsh, please run `chsh -s /bin/zsh`. 
+For more details, please visit https://support.apple.com/kb/HT208050. 
+bash-3.2$ source ../ping_securise_openssl.sh  
+bash: declare: -A: invalid option 
+declare: usage: declare [-afFirtx] [-p] [name[=value] ...] 
+bash-3.2$ ping_securise_initiateur  
+Quelle est votre identité ? 
+alice 
+Avec qui voulez-vous communiquer ? 
+bob 
+envoi du nonce 30ca7bace0f08d2d2990295cc406f293 à bob 
+JXxq7GYc8edelMbAB7Eu8C3XlZ4bMTpIp7PNKKDxj3O4kIqOCUR8/HmmOhDHsdmZA8MzH5NPxhwn2R6Lxn3L55X0YTWUi6w7u4ee7Fbjf/2JmLd8o7q2FQ8NWQkPoylBQE2cEVstTqM6nabfldNWnozBqfF0wXlgZPFSi4lsfgs8U+Si26/LBYnvQfHC9aHB3mSDQ64syWRGA41s3yGWNZYoFkUrTiQUa/I+cYCxAtPjIACw9lqG7lqcnymVCSya3n3nfdup2XS2n6c4MHNYmmisF7zPxjfRtQwcTNHthjw6aggDt85GJErtAnprYU3o4M/pZn1/C9ALWTnOcHYHrw== 
+alice -> bob : W4vycYaka1Viky0sru1wxPiqUNiXNEQC9ZQfcHWGPDkk1qBU/CHqny5/yCok3eMLDDGpccdfZkOgeQMTGirtDQJQqLaHWYGBOBI4vEetr0ZdlFB2dgvypfEXSMPvGpCjrigmOLXAw2vc3Fe2JuXf9VkxtPeKDlFwlxWOMnrxzo8DKFuXNqReDMxh9OlqpEGUf+8qfAlPsU0v1OglVSD4EME2f7hNWjmUrAvIUcI3lAYYSGtP4wg4nbE2EgV7HeIMXaHUxMdpksFfx29spkeby4b62W0RcCuZIFlZqKEGbglbG7BLgJwlMUB9lZSxB8SCYcnvSdZmymQcdCEfWUf9vw== 
+nonce utilisé: 30ca7bace0f08d2d2990295cc406f293 
+Quelle est la réponse ? 
+bob -> alice : L7KdFA487cy8S98BtZkxgRZ+snIisN7DdVW1fDJamTYAGIBNa2TSZlAFbLl9NtAl/wtLB9J6F1UQUIa4KPYZSjVj35Xcl0tuES9ESIQqs1tVkJtGe+rvUKsmtNdgGXHzTwFw5sCFPk836j/a1nWmnWgYN+rJmgwJNSKu20i72hlyeOJmbOTjub9vrjLpTDrmmNlnOiaAeHlWRDtFN3Nh8rSfnB7QxKL1Mz64k4mMv2G1CZha3dPWlDxsWIzgmQKZYpFb9liJ/n5v17NNRdLDJjBRaVRkNDpI1QSRmsaOPdBTw0OESRhguyZ7RPrd9K7T2jc7mpVoAsKlA12DmqHTbA== 
+nonce renvoyé (à vérifier avant de répondre): 30ca7bace0f08d2d2990295cc406f293 
+alice -> bob : QMpQu2fO9qR88GOnu8rBXUpu7TBxDbTOq/QDHz9RJpQMUSMQk5wFkhY0ittKEtdjYp+N69iB3s4c1YS9FihrCeKTmr5drIHGWqsX3T9/PYTTyZILMwh10RjGJhs0Vs2dLm2wBNn9cDsHovUMQYd+KlkZLjATxDCYIhqkq7ROKue0gkrlIqxvmtLfjwYxe3a8gzS++tYh1p5jIWE/64ZgQ6whJ2txpqMP5xMArqncvr5ICzOSLlxHtM2Yc2nalaSevNCaLnMrRQ3UERpnq08epEANv+fDqIS78cS4YTfcWfjE0zhHmoGE9rqtpk0BWQWVVbVysMiZlQJppukviYdwCA== 
+Exécution avec bob terminée avec succès. 
+bash-3.2$  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

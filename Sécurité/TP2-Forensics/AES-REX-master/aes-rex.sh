@@ -24,7 +24,7 @@ then
 fi
 if [[ "$process" != "-p" ]]
 then
-	pid=$(pidof $process)
+	pid=$(pidof $process | awk '{print $1}')
 fi
 if [[ ! "$pid" ]]
 then
@@ -61,7 +61,7 @@ do
 #	echo "tbreak *0x$address+0x$break"
 done
 
-debug=$debug'-ex "continue" -ex "print $xmm0.uint128" -ex "print $xmm1.uint128" -ex "print /x $rax" -ex "print /x $rdx" -ex "print /x $r9" -ex "print /x $r15"'
+debug=$debug'-ex "continue" -ex "print /x $xmm0.uint128" -ex "print /x $xmm1.uint128" -ex "print /x $rax" -ex "print /x $rdx" -ex "print /x $r9" -ex "print /x $r15"'
 dump=$(echo "$debug" | xargs gdb 2>/dev/null | egrep '\$[1-6]' | cut -d '=' -f 2 | sed s/0x//g | tr -d '\nx')
 #echo "$dump"
 key=$(echo "$dump" | cut -d ' ' -f 2,3 | tr -d ' ' | tac -rs .. | tr -d '\n')

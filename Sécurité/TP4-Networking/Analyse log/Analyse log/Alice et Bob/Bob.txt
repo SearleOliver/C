@@ -1,0 +1,42 @@
+Last login: Tue Mar 24 17:25:49 on ttys000 
+~ > cd /Volumes/Dock\ sauv\ FAC/FLEX\ Cours/Semestre\ printemps/Sécurité/TP4     py 3.9.10 17:26:00 
+/Volumes/D/F/Semestre /Sécurité/TP4 > ls                                                   17:26:03 
+Ignoring clocale-0.0.4 because its extensions are not built. Try: gem pristine clocale --version 0.0.4 
+Ignoring commonmarker-0.17.13 because its extensions are not built. Try: gem pristine commonmarker --version 0.17.13 
+Ignoring eventmachine-1.2.7 because its extensions are not built. Try: gem pristine eventmachine --version 1.2.7 
+Ignoring ffi-1.16.3 because its extensions are not built. Try: gem pristine ffi --version 1.16.3 
+Ignoring http_parser.rb-0.8.0 because its extensions are not built. Try: gem pristine http_parser.rb --version 0.8.0 
+Ignoring racc-1.7.3 because its extensions are not built. Try: gem pristine racc --version 1.7.3 
+Ignoring unf_ext-0.0.9.1 because its extensions are not built. Try: gem pristine unf_ext --version 0.0.9.1 
+       Alice/                                            ping_securise_attaque.sh  
+       Analyse attaque/                                  ping_securise_new.sh  
+       attaque.sh                                        ping_securise_openssl.sh  
+       Bob/                                              ping_securise_simple_rsault.sh  
+       Charlie/                                          ping_securise.mp4  
+       clef_privee.pem                                   tp-enonces-04.pdf  
+       clef_publique.pem                                 TP4.old/ 
+       Needham–Schroeder protocol - Wikipedia.pdf        TP4.txt  
+/Volumes/D/F/Semestre /Sécurité/TP4 > cd Bob                                               17:26:05 
+/Volumes/D/F/Semestre /S/TP4/Bob > bash                                                    17:26:15 
+ 
+The default interactive shell is now zsh. 
+To update your account to use zsh, please run `chsh -s /bin/zsh`. 
+For more details, please visit https://support.apple.com/kb/HT208050. 
+bash-3.2$ source ../ping_securise_openssl.sh  
+bash: declare: -A: invalid option 
+declare: usage: declare [-afFirtx] [-p] [name[=value] ...] 
+bash-3.2$ ping_securise_repondeur  
+Quel message vous a été adressé ? 
+alice -> bob : W4vycYaka1Viky0sru1wxPiqUNiXNEQC9ZQfcHWGPDkk1qBU/CHqny5/yCok3eMLDDGpccdfZkOgeQMTGirtDQJQqLaHWYGBOBI4vEetr0ZdlFB2dgvypfEXSMPvGpCjrigmOLXAw2vc3Fe2JuXf9VkxtPeKDlFwlxWOMnrxzo8DKFuXNqReDMxh9OlqpEGUf+8qfAlPsU0v1OglVSD4EME2f7hNWjmUrAvIUcI3lAYYSGtP4wg4nbE2EgV7HeIMXaHUxMdpksFfx29spkeby4b62W0RcCuZIFlZqKEGbglbG7BLgJwlMUB9lZSxB8SCYcnvSdZmymQcdCEfWUf9vw== 
+message recu: ||W4vycYaka1Viky0sru1wxPiqUNiXNEQC9ZQfcHWGPDkk1qBU/CHqny5/yCok3eMLDDGpccdfZkOgeQMTGirtDQJQqLaHWYGBOBI4vEetr0ZdlFB2dgvypfEXSMPvGpCjrigmOLXAw2vc3Fe2JuXf9VkxtPeKDlFwlxWOMnrxzo8DKFuXNqReDMxh9OlqpEGUf+8qfAlPsU0v1OglVSD4EME2f7hNWjmUrAvIUcI3lAYYSGtP4wg4nbE2EgV7HeIMXaHUxMdpksFfx29spkeby4b62W0RcCuZIFlZqKEGbglbG7BLgJwlMUB9lZSxB8SCYcnvSdZmymQcdCEfWUf9vw==|| de ||alice|| 
+émetteur: alice 
+nonce : 30ca7bace0f08d2d2990295cc406f293 
+réponse (avec nonce bfc7732891dfa1cfebc8434919958aa4): 
+bob -> alice : L7KdFA487cy8S98BtZkxgRZ+snIisN7DdVW1fDJamTYAGIBNa2TSZlAFbLl9NtAl/wtLB9J6F1UQUIa4KPYZSjVj35Xcl0tuES9ESIQqs1tVkJtGe+rvUKsmtNdgGXHzTwFw5sCFPk836j/a1nWmnWgYN+rJmgwJNSKu20i72hlyeOJmbOTjub9vrjLpTDrmmNlnOiaAeHlWRDtFN3Nh8rSfnB7QxKL1Mz64k4mMv2G1CZha3dPWlDxsWIzgmQKZYpFb9liJ/n5v17NNRdLDJjBRaVRkNDpI1QSRmsaOPdBTw0OESRhguyZ7RPrd9K7T2jc7mpVoAsKlA12DmqHTbA== 
+nonce renvoyé (à vérifier avant de conclure):  
+Quelle est la réponse ? 
+alice -> bob : QMpQu2fO9qR88GOnu8rBXUpu7TBxDbTOq/QDHz9RJpQMUSMQk5wFkhY0ittKEtdjYp+N69iB3s4c1YS9FihrCeKTmr5drIHGWqsX3T9/PYTTyZILMwh10RjGJhs0Vs2dLm2wBNn9cDsHovUMQYd+KlkZLjATxDCYIhqkq7ROKue0gkrlIqxvmtLfjwYxe3a8gzS++tYh1p5jIWE/64ZgQ6whJ2txpqMP5xMArqncvr5ICzOSLlxHtM2Yc2nalaSevNCaLnMrRQ3UERpnq08epEANv+fDqIS78cS4YTfcWfjE0zhHmoGE9rqtpk0BWQWVVbVysMiZlQJppukviYdwCA== 
+nonce renvoyé par alice (à vérifier avant de conclure): bfc7732891dfa1cfebc8434919958aa4 
+Exécution avec alice terminée avec succès. 
+bash-3.2$  
+ 
