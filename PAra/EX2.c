@@ -3,7 +3,7 @@
 #include <omp.h>
 #include <sys/time.h>
 #define SIZE 2000
-#define NUM_THREADS 6
+#define NUM_THREADS 1
 
 long long sequentielle(double* matrice){
     int i , j;
@@ -19,7 +19,7 @@ long long sequentielle(double* matrice){
 long long partielle(double* matrice){
     long long sum = 0;
     long long sump[NUM_THREADS];
-    int i;
+    int i,j;
 
     for (i = 0; i < NUM_THREADS; i++)
         sump[i] = 0;
@@ -28,9 +28,12 @@ long long partielle(double* matrice){
     {
         int id = omp_get_thread_num();
         #pragma omp for
-        for (i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                sump[id] += (long long)matrice[i*SIZE + j];
+        for (i = 0; i < SIZE; i++){
+            int local = 0;
+            for (j = 0; j < SIZE; j++)
+                local += (long long)matrice[i*SIZE + j];
+            sump[id]+=local;
+        }
     }
     for (i = 0; i < NUM_THREADS; i++)
         sum += sump[i];
@@ -68,48 +71,42 @@ long long reduction(double* matrice) {
     return sum;
 }
 
-
 int main(int argc, char **argv){
-    int nb, i , j, k;
-    double t,start,stop;
-    double* matrice;
+    int i, j;
+    double start, stop;
+    double* matrice = (double*) malloc(SIZE*SIZE*sizeof(double));
 
-
-    // Allocation
-    matrice = (double*) malloc(SIZE*SIZE*sizeof(double)) ;
-
-
-    // Initialisation
     for (i = 0; i < SIZE; i++)
         for (j = 0; j < SIZE; j++)
             matrice[i*SIZE + j] = 1.0;
 
-    start = omp_get_wtime();
-    long long  res = sequentielle(matrice);
-    stop = omp_get_wtime();
-    t=stop-start;
-    printf("Sequentielle : %lld t : %f\n",res,t);
 
-    start = omp_get_wtime();
-    long long  res2 = partielle(matrice);
-    stop = omp_get_wtime();
-    t=stop-start;
-    printf("Partielle : %lld t : %f\n",res2,t);
+    double t_seq[100], t_part[100], t_part2[100], t_red[100];
 
-    start = omp_get_wtime();
-    long long  res3 = partielle2(matrice);
-    stop = omp_get_wtime();
-    t=stop-start;
-    printf("Partielle2 : %lld t : %f\n",res3,t);
+    for (i = 0; i < 100; i++) {
+        start = omp_get_wtime(); sequentielle(matrice); t_seq[i]   = omp_get_wtime() - start;
+        start = omp_get_wtime();  partielle(matrice);    t_part[i]  = omp_get_wtime() - start;
+        start = omp_get_wtime(); partielle2(matrice);   t_part2[i] = omp_get_wtime() - start;
+        start = omp_get_wtime(); reduction(matrice);    t_red[i]   = omp_get_wtime() - start;
+    }
 
-    start = omp_get_wtime();
-    long long res4 = reduction(matrice);
-    stop = omp_get_wtime();
-    t=stop-start;
-    printf("Reduction : %lld t : %f\n",res4,t);
+    double s1=0, s2=0, s3=0, s4=0;
+    for (i = 0; i < 100; i++) { s1+=t_seq[i]; s2+=t_part[i]; s3+=t_part2[i]; s4+=t_red[i]; }
+    printf("Sequentielle      moyenne : %f\n", s1/100);
+    printf("Partielle         moyenne : %f\n", s2/100);
+    printf("Partielle atomique moyenne: %f\n", s3/100);
+    printf("Reduction         moyenne : %f\n", s4/100);
 
+    FILE* f = fopen("resultats.csv", "w");
+    if (f == NULL) { fprintf(stderr, "Erreur ouverture fichier CSV\n"); return EXIT_FAILURE; }
 
-    // Liberations
+    fprintf(f, "execution,sequentielle,partielle,partielle_atomique,reduction\n");
+    for (i = 0; i < 100; i++)
+        fprintf(f, "%d,%.6f,%.6f,%.6f,%.6f\n", i+1, t_seq[i], t_part[i], t_part2[i], t_red[i]);
+
+    fclose(f);
+    printf("Résultats exportés dans resultats.csv\n");
+
     free(matrice);
     return EXIT_SUCCESS;
 }
