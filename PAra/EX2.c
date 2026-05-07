@@ -19,22 +19,23 @@ long long sequentielle(double* matrice){
 long long partielle(double* matrice){
     long long sum = 0;
     long long sump[NUM_THREADS];
-    int i,j;
-
-    for (i = 0; i < NUM_THREADS; i++)
-        sump[i] = 0;
+    int i, j;
+    for (i = 0; i < NUM_THREADS; i++) sump[i] = 0;
 
     #pragma omp parallel num_threads(NUM_THREADS)
     {
         int id = omp_get_thread_num();
+        long long local = 0;
+        int i, j;
+
         #pragma omp for
-        for (i = 0; i < SIZE; i++){
-            int local = 0;
+        for (i = 0; i < SIZE; i++)
             for (j = 0; j < SIZE; j++)
                 local += (long long)matrice[i*SIZE + j];
-            sump[id]+=local;
-        }
+
+        sump[id] = local;
     }
+
     for (i = 0; i < NUM_THREADS; i++)
         sum += sump[i];
 
