@@ -81,14 +81,17 @@ void parallel(int* M, int* U, int S[][capacity+1],int threads){
         else
             S[0][j]=0;
     }
-    #pragma omp parallel for num_threads(threads)
-    for (int i =1; i < num_obj;i++){
-        for (int j =0; j <= capacity; j++){
-            if (M[i]<=j && S[i-1][j-M[i]]+U[i]>S[i-1][j])
-                S[i][j]=S[i-1][j-M[i]]+U[i];
-            else 
-                S[i][j]=S[i-1][j];
-        }   
+    #pragma omp parallel num_threads(threads)
+    {
+    for (int i = 1; i < num_obj; i++){
+        #pragma omp for
+        for (int j = 0; j <= capacity; j++){
+            if (M[i]<=j && S[i-1][j-M[i]]+U[i] > S[i-1][j])
+                S[i][j] = S[i-1][j-M[i]] + U[i];
+            else
+                S[i][j] = S[i-1][j];
+        }
+    }
     }
 }
 
@@ -142,7 +145,7 @@ int main(int argc, char **argv){
     FILE* f = fopen("resultats.csv", "w");
     if (f == NULL) { fprintf(stderr, "Erreur ouverture fichier CSV\n"); return EXIT_FAILURE; }
 
-    fprintf(f, "execution,sequentielle,para2,para4,para8,para16\n");
+    fprintf(f, "execution, sequentielle,para2,para4,para8,para16\n");
     for (i = 0; i < 100; i++)
         fprintf(f, "%d,%.6f,%.6f,%.6f,%.6f,%.6f\n", i+1, t_seq[i], t_para2[i], t_para4[i], t_para8[i],t_para16[i]);
 
