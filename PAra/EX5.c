@@ -116,6 +116,57 @@ void colorToGrey(color_image_type *col_img, grey_image_type *grey_img){
 }
 
 /**********************************************************************/
+
+void contrastAdjust (grey_image_type *grey_img){
+    int H[256];
+    int C[256];
+    int S = grey_img->height * grey_img->width;
+    for (int h=0; h<256;h++)
+        H[h]=0;
+    for (int i=0; i < grey_img->height ; i++)
+      for (int j=0; j < grey_img->width ; j++)
+        H[grey_img->pixels[i * grey_img->width + j]] +=1;
+    C[0]=H[0];
+    for (int h=1; h<256;h++)
+        C[h]=C[h-1]+H[h];
+    for (int i=0; i < grey_img->height ; i++)
+      for (int j=0; j < grey_img->width ; j++){
+        int index = i * grey_img->width + j;
+        grey_img->pixels[index]= 255*C[grey_img->pixels[index]]/S;
+    }
+}
+
+/**********************************************************************/
+
+void contrastAdjustPara (grey_image_type *grey_img,int threads){
+    int H[256];
+    int C[256];
+    int S = grey_img->height * grey_img->width;
+    #pragma omp parallel num_threads(threads)
+    {
+    #pragma omp for
+    for (int h=0; h<256;h++)
+        H[h]=0;
+
+    for (int i=0; i < grey_img->height ; i++)
+      for (int j=0; j < grey_img->width ; j++)
+        H[grey_img->pixels[i * grey_img->width + j]] +=1;
+
+    C[0]=H[0];
+
+    for (int h=1; h<256;h++)
+        C[h]=C[h-1]+H[h];
+    
+    #pragma omp for
+    for (int i=0; i < grey_img->height ; i++)
+      for (int j=0; j < grey_img->width ; j++){
+        int index = i * grey_img->width + j;
+        grey_img->pixels[index]= 255*C[grey_img->pixels[index]]/S;
+    }
+    }
+}
+
+/**********************************************************************/
 int main(int argc, char ** argv){
   color_image_type * col_img;
   grey_image_type * grey_img;
