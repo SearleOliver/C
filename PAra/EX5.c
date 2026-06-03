@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <sys/time.h>
+#include <omp.h>
 
 
 typedef struct color_pixel_struct {
@@ -117,6 +119,19 @@ void colorToGrey(color_image_type *col_img, grey_image_type *grey_img){
 
 /**********************************************************************/
 
+void colorToGreyPara(color_image_type *col_img, grey_image_type *grey_img, int threads){
+  #pragma omp parallel for num_threads(threads)
+  for (int i=0; i < col_img->height ; i++) {
+    for (int j=0; j < col_img->width ; j++){
+      int index = i * col_img->width + j;
+      color_pixel_type *pix = &(col_img->pixels[index]);
+      grey_img->pixels[index] = (299*pix->r + 587*pix->g + 114*pix->b)/1000;
+    }
+  }
+}
+
+/**********************************************************************/
+
 void contrastAdjust (grey_image_type *grey_img){
     int H[256];
     int C[256];
@@ -139,37 +154,89 @@ void contrastAdjust (grey_image_type *grey_img){
 /**********************************************************************/
 
 void contrastAdjustPara (grey_image_type *grey_img,int threads){
-    int H[256];
-    int C[256];
-    int S = grey_img->height * grey_img->width;
-    #pragma omp parallel num_threads(threads)
-    {
-    #pragma omp for
-    for (int h=0; h<256;h++)
-        H[h]=0;
+  int H[256];
+  int C[256];
+  int S = grey_img->height * grey_img->width;
+  #pragma omp parallel num_threads(threads)
+  {
+  #pragma omp for
+  for (int h=0; h<256;h++)
+      H[h]=0;
 
+  #pragma omp single
+  {
+  for (int i=0; i < grey_img->height ; i++)
+    for (int j=0; j < grey_img->width ; j++)
+      H[grey_img->pixels[i * grey_img->width + j]] +=1;
+
+  C[0]=H[0];
+    
+
+  for (int h=1; h<256;h++)
+    C[h]=C[h-1]+H[h];
+  }
+  
+  
+  #pragma omp for
+  for (int i=0; i < grey_img->height ; i++){
+    for (int j=0; j < grey_img->width ; j++){
+      int index = i * grey_img->width + j;
+      grey_img->pixels[index]= 255*C[grey_img->pixels[index]]/S;
+    }
+  }
+  }
+}
+
+/**********************************************************************/
+
+void toGreyContrastAdjustPara (color_image_type *col_img, grey_image_type *grey_img,int threads){
+  int H[256];
+  int C[256];
+  int S = grey_img->height * grey_img->width;
+  #pragma omp parallel num_threads(threads)
+  {
+  #pragma omp for
+  for (int i=0; i < col_img->height ; i++) {
+    for (int j=0; j < col_img->width ; j++){
+      int index = i * col_img->width + j;
+      color_pixel_type *pix = &(col_img->pixels[index]);
+      grey_img->pixels[index] = (299*pix->r + 587*pix->g + 114*pix->b)/1000;
+    }
+  }
+  #pragma omp for
+  for (int h=0; h<256;h++)
+      H[h]=0;
+
+  #pragma omp single
+  {
     for (int i=0; i < grey_img->height ; i++)
       for (int j=0; j < grey_img->width ; j++)
         H[grey_img->pixels[i * grey_img->width + j]] +=1;
 
     C[0]=H[0];
+    
 
     for (int h=1; h<256;h++)
-        C[h]=C[h-1]+H[h];
-    
-    #pragma omp for
-    for (int i=0; i < grey_img->height ; i++)
-      for (int j=0; j < grey_img->width ; j++){
-        int index = i * grey_img->width + j;
-        grey_img->pixels[index]= 255*C[grey_img->pixels[index]]/S;
+      C[h]=C[h-1]+H[h];
+  }
+  
+  
+  #pragma omp for
+  for (int i=0; i < grey_img->height ; i++){
+    for (int j=0; j < grey_img->width ; j++){
+      int index = i * grey_img->width + j;
+      grey_img->pixels[index]= 255*C[grey_img->pixels[index]]/S;
     }
-    }
+  }
+  }
 }
 
 /**********************************************************************/
 int main(int argc, char ** argv){
   color_image_type * col_img;
   grey_image_type * grey_img;
+  int i, j;
+  double start, stop;
 
   if (argc != 3){
     printf("Usage: togrey <input image> <output image>\n");
@@ -180,8 +247,33 @@ int main(int argc, char ** argv){
 
   col_img = loadColorImage(input_file);
   grey_img = createGreyImage(col_img->width, col_img->height);
+  
+  double t_seq[100], t_parasep2[100], t_parasep4[100], t_parasep8[100], t_parasep12[100], t_parasep16[100];
+  double t_paracomb2[100], t_paracomb4[100], t_paracomb8[100], t_paracomb12[100], t_paracomb16[100];
 
-  colorToGrey(col_img, grey_img);
+  for (int i = 0; i < 100; i++) {
+    start = omp_get_wtime(); colorToGrey(col_img, grey_img); contrastAdjust(grey_img); t_seq[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); colorToGreyPara(col_img, grey_img,2); contrastAdjustPara(grey_img,2); t_parasep2[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); colorToGreyPara(col_img, grey_img,4); contrastAdjustPara(grey_img,4); t_parasep4[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); colorToGreyPara(col_img, grey_img,8); contrastAdjustPara(grey_img,8); t_parasep8[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); colorToGreyPara(col_img, grey_img,12); contrastAdjustPara(grey_img,12); t_parasep12[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); colorToGreyPara(col_img, grey_img,16); contrastAdjustPara(grey_img,16); t_parasep16[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); toGreyContrastAdjustPara(col_img, grey_img, 2); t_paracomb2[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); toGreyContrastAdjustPara(col_img, grey_img, 4); t_paracomb4[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); toGreyContrastAdjustPara(col_img, grey_img, 8); t_paracomb8[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); toGreyContrastAdjustPara(col_img, grey_img, 12); t_paracomb12[i] = omp_get_wtime() - start;
+    start = omp_get_wtime(); toGreyContrastAdjustPara(col_img, grey_img, 16); t_paracomb16[i] = omp_get_wtime() - start;
+  }
+  FILE* f = fopen("resultats5.csv", "w");
+  if (f == NULL) { fprintf(stderr, "Erreur ouverture fichier CSV\n"); return EXIT_FAILURE; }
+
+  fprintf(f, "execution,sequentielle,paraSep2,paraSep4,paraSep8,paraSep12,paraSep16,paraComb2,paraComb4,paraComb8,paraComb12,paraComb16\n");
+  for (i = 0; i < 100; i++)
+    fprintf(f, "%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n", i+1, t_seq[i], t_parasep2[i], t_parasep4[i], t_parasep8[i], t_parasep12[i], t_parasep16[i], t_paracomb2[i],t_paracomb4[i], t_paracomb8[i],t_paracomb12[i], t_paracomb16[i]);
+
+  fclose(f);
+  printf("Résultats exportés dans resultats5.csv\n");
   
   saveGreyImage(output_file, grey_img);
+  return EXIT_SUCCESS;
 }
